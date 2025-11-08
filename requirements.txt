@@ -1,0 +1,82 @@
+# Core C2PA and Cryptography
+c2pa-python>=0.4.0
+cryptography>=41.0.0
+pycryptodome>=3.19.0
+
+# Post-Quantum Cryptography
+# Note: These are example packages - actual PQC implementation may require
+# specific libraries or custom implementations
+pqcrypto>=0.1.0  # Post-quantum cryptography primitives
+liboqs-python>=0.8.0  # Open Quantum Safe
+
+# Web Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Database
+sqlalchemy>=2.0.23
+alembic>=1.12.1
+psycopg2-binary>=2.9.9
+pymongo>=4.6.0
+redis>=5.0.1
+
+# Storage
+minio>=7.2.0
+boto3>=1.34.0
+
+# Task Queue
+celery>=5.3.4
+kombu>=5.3.4
+
+# Image Processing
+Pillow>=10.1.0
+python-magic>=0.4.27
+
+# Metadata Extraction
+exifread>=3.0.0
+python-xmp-toolkit>=2.0.1
+
+# PDF Processing
+PyPDF2>=3.0.1
+pikepdf>=8.10.0
+
+# Authentication & Authorization
+python-ldap>=3.4.4
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# HTTP Client
+httpx>=0.25.2
+aiohttp>=3.9.1
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0.1
+click>=8.1.7
+python-multipart>=0.0.6
+email-validator>=2.1.0
+
+# Logging & Monitoring
+structlog>=23.2.0
+prometheus-client>=0.19.0
+
+# Testing
+pytest>=7.4.3
+pytest-asyncio>=0.21.1
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+httpx>=0.25.2
+faker>=20.1.0
+
+# Development
+black>=23.12.0
+isort>=5.13.0
+flake8>=6.1.0
+mypy>=1.7.1
+pre-commit>=3.6.0
+
+# Documentation
+mkdocs>=1.5.3
+mkdocs-material>=9.5.0

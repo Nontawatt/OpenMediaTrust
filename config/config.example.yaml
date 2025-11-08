@@ -1,0 +1,166 @@
+# OpenMediaTrust Configuration Example
+# Copy this file to config.yaml and customize for your environment
+
+# Application Settings
+application:
+  name: "OpenMediaTrust"
+  version: "1.0.0"
+  environment: "production"  # development, staging, production
+  debug: false
+  log_level: "INFO"
+
+# Server Settings
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+
+# Database Configuration
+database:
+  # PostgreSQL for manifest metadata
+  url: "postgresql://user:password@localhost:5432/openmediatrust"
+  pool_size: 20
+  max_overflow: 10
+  echo: false
+
+# Object Storage Configuration (S3-compatible)
+storage:
+  endpoint: "localhost:9000"  # MinIO endpoint
+  access_key: "minioadmin"
+  secret_key: "minioadmin"
+  secure: false  # Use HTTPS
+  region: "us-east-1"
+
+  # Bucket configuration
+  buckets:
+    hot: "openmediatrust-hot"
+    warm: "openmediatrust-warm"
+    cold: "openmediatrust-cold"
+
+# Cryptography Settings
+crypto:
+  # Default signature algorithm
+  default_algorithm: "ml-dsa-65"  # ml-dsa-44, ml-dsa-65, ml-dsa-87, slh-dsa-sha2-128s
+
+  # Key storage
+  keys_directory: "/etc/openmediatrust/keys"
+  certificates_directory: "/etc/openmediatrust/certs"
+
+  # Time Stamping Authority
+  tsa_url: "https://tsa.openmediatrust.org"
+
+  # Trusted certificates (PEM format)
+  trusted_certificates:
+    - "/etc/openmediatrust/certs/trusted/root-ca.pem"
+    - "/etc/openmediatrust/certs/trusted/intermediate-ca.pem"
+
+# LDAP/Active Directory Integration
+ldap:
+  enabled: false
+  url: "ldap://ldap.example.com:389"
+  base_dn: "dc=example,dc=com"
+  user_dn: "cn=admin,dc=example,dc=com"
+  password: "admin_password"
+  user_search_base: "ou=users,dc=example,dc=com"
+  group_search_base: "ou=groups,dc=example,dc=com"
+
+# Authentication
+auth:
+  # JWT settings
+  jwt_secret: "your-secret-key-change-this"
+  jwt_algorithm: "HS256"
+  jwt_expiration_hours: 24
+
+  # Session settings
+  session_timeout_minutes: 60
+
+# Organization Settings
+organization:
+  name: "Your Organization"
+  default_classification: "internal"
+  departments:
+    - "Marketing"
+    - "Legal"
+    - "Engineering"
+    - "Operations"
+
+# Workflow Settings
+workflow:
+  # Auto-transition settings
+  auto_archive_days: 365
+  require_approval_for_public: true
+
+  # Notification settings
+  notifications_enabled: true
+  notification_endpoints:
+    email: "notifications@example.com"
+    webhook: "https://webhook.example.com/openmediatrust"
+
+# Compliance Settings
+compliance:
+  # PDPA settings
+  pdpa_enabled: true
+  pdpa_default_consent: false
+
+  # Retention policies (days)
+  retention_policies:
+    public: 2555  # 7 years
+    internal: 1825  # 5 years
+    confidential: 3650  # 10 years
+    secret: 7300  # 20 years
+
+  # Compliance checks
+  required_checks:
+    - "pdpa_consent"
+    - "trademark_clearance"
+    - "legal_review"
+
+# Monitoring and Logging
+monitoring:
+  # Prometheus metrics
+  prometheus_enabled: true
+  prometheus_port: 9090
+
+  # Logging
+  log_file: "/var/log/openmediatrust/app.log"
+  access_log: "/var/log/openmediatrust/access.log"
+  audit_log: "/var/log/openmediatrust/audit.log"
+
+  # Sentry error tracking
+  sentry_enabled: false
+  sentry_dsn: ""
+
+# API Settings
+api:
+  cors_origins:
+    - "http://localhost:3000"
+    - "https://app.example.com"
+  rate_limit: "100/minute"
+  max_upload_size_mb: 100
+
+# Cache Settings
+cache:
+  enabled: true
+  backend: "redis"  # redis, memcached
+  redis_url: "redis://localhost:6379/0"
+  default_ttl: 3600  # seconds
+
+# Background Tasks
+tasks:
+  # Celery settings
+  broker_url: "redis://localhost:6379/1"
+  result_backend: "redis://localhost:6379/2"
+
+  # Scheduled tasks
+  scheduled:
+    archive_old_manifests: "0 2 * * *"  # 2 AM daily
+    cleanup_temp_files: "0 */6 * * *"  # Every 6 hours
+    generate_reports: "0 8 * * MON"  # Monday 8 AM
+
+# Feature Flags
+features:
+  blockchain_anchoring: false
+  ai_content_detection: false
+  advanced_analytics: true
+  multi_tenant: true

@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: openmediatrust-postgres
+    environment:
+      POSTGRES_DB: openmediatrust
+      POSTGRES_USER: openmediatrust
+      POSTGRES_PASSWORD: openmediatrust_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - openmediatrust
+
+  # MinIO Object Storage
+  minio:
+    image: minio/minio:latest
+    container_name: openmediatrust-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - openmediatrust
+
+  # Redis Cache & Message Broker
+  redis:
+    image: redis:7-alpine
+    container_name: openmediatrust-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - openmediatrust
+
+  # OpenMediaTrust API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openmediatrust-api
+    environment:
+      DATABASE_URL: postgresql://openmediatrust:openmediatrust_password@postgres:5432/openmediatrust
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - minio
+      - redis
+    volumes:
+      - ./config:/app/config:ro
+      - ./keys:/app/keys:ro
+    networks:
+      - openmediatrust
+
+  # Celery Worker for Background Tasks
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openmediatrust-worker
+    command: celery -A src.tasks worker --loglevel=info
+    environment:
+      DATABASE_URL: postgresql://openmediatrust:openmediatrust_password@postgres:5432/openmediatrust
+      REDIS_URL: redis://redis:6379/1
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./config:/app/config:ro
+    networks:
+      - openmediatrust
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: openmediatrust-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deployment/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - openmediatrust
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: openmediatrust-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - openmediatrust
+
+networks:
+  openmediatrust:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  minio_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
