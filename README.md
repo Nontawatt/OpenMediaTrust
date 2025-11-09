@@ -1,6 +1,6 @@
 # OpenMediaTrust
 
-Enterprise-grade C2PA (Coalition for Content Provenance and Authenticity) Manifest System with Post-Quantum Cryptography support.
+Enterprise-grade C2PA (Coalition for Content Provenance and Authenticity) Manifest System with Post-Quantum Cryptography support
 
 ## Overview
 
