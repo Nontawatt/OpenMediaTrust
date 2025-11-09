@@ -161,7 +161,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-[License details to be determined]
+[SRAN License]
 
 ## Support
 
